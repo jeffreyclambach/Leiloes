@@ -1,6 +1,4 @@
 # Casa de Leilões
-<<<<<<< HEAD
-
 
 Sistema para gerenciamento de processos de leilões — cadastro de lotes, lances, usuários e geração de relatórios.
 
