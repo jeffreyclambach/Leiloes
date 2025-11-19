@@ -1,4 +1,5 @@
 # Casa de Leilões
+<<<<<<< HEAD
 
 
 Sistema para gerenciamento de processos de leilões — cadastro de lotes, lances, usuários e geração de relatórios.
@@ -9,3 +10,5 @@ Sistema para gerenciamento de processos de leilões — cadastro de lotes, lance
 - Banco de dados: MySQL
 - IDE: NetBeans
 - Controle de versão: Git + GitHub
+=======
+>>>>>>> 9aebe12 (Adicionar README.md)
