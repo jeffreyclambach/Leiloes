@@ -1,14 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author Adm
- */
-
-// imports que você já tem
 import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -22,43 +11,57 @@ public class ProdutosDAO {
     PreparedStatement prep;
     ResultSet resultset;
 
-    // MÉTODO PARA CADASTRAR PRODUTO NO BANCO (agora retorna boolean)
+    // MÉTODO PARA CADASTRAR PRODUTO NO BANCO
     public boolean cadastrarProduto(ProdutosDTO produto) {
 
         String sql = "INSERT INTO produtos (nome, valor, status) VALUES (?, ?, ?)";
 
         try {
-            // Use aqui sua classe que fornece a conexão. 
-            // No seu projeto você comentou conn = new conectaDAO().connectDB();
-            // Então eu uso esse mesmo método abaixo:
-            conn = new conectaDAO().connectDB();
-
+            conn = new conectaDAO().getConnection(); // usa sua classe de conexão
             prep = conn.prepareStatement(sql);
+
             prep.setString(1, produto.getNome());
-            prep.setInt(2, produto.getValor());
+            prep.setInt(2, produto.getValor()); // se usar double, troque p/ setDouble
             prep.setString(3, produto.getStatus());
 
-            int linhas = prep.executeUpdate();
+int linhas = prep.executeUpdate();
+System.out.println("[DEBUG - DAO] linhas afetadas: " + linhas);
+return linhas > 0;
 
-            // opcional: fechar recursos (melhor prática)
-            try { if (prep != null) prep.close(); } catch (Exception ex) {}
-            try { if (conn != null) conn.close(); } catch (Exception ex) {}
-
-            return linhas > 0;
 
         } catch (SQLException e) {
-            // mostra mensagem e retorna false em caso de erro
             JOptionPane.showMessageDialog(null, "Erro ao cadastrar produto: " + e.getMessage());
-            e.printStackTrace();
             return false;
         }
     }
 
-    // ... resto da classe (listarProdutos etc.)
+    // LISTAR PRODUTOS DO BANCO
+    public ArrayList<ProdutosDTO> listarProdutos() {
 
-    ArrayList<ProdutosDTO> listarProdutos() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        ArrayList<ProdutosDTO> lista = new ArrayList<>();
+
+        String sql = "SELECT * FROM produtos ORDER BY id DESC"; // ajuste para seu nome de tabela
+
+        try {
+            conn = new conectaDAO().getConnection();
+            prep = conn.prepareStatement(sql);
+            resultset = prep.executeQuery();
+
+            while (resultset.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+
+                produto.setId(resultset.getInt("id"));
+                produto.setNome(resultset.getString("nome"));
+                produto.setValor(resultset.getInt("valor"));
+                produto.setStatus(resultset.getString("status"));
+
+                lista.add(produto);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao listar produtos: " + e.getMessage());
+        }
+
+        return lista;
     }
 }
-
-
