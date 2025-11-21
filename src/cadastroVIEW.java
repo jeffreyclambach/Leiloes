@@ -140,17 +140,58 @@ public class cadastroVIEW extends javax.swing.JFrame {
     }//GEN-LAST:event_cadastroNomeActionPerformed
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        ProdutosDTO produto = new ProdutosDTO();
-        String nome = cadastroNome.getText();
-        String valor = cadastroValor.getText();
-        String status = "A Venda";
-        produto.setNome(nome);
-        produto.setValor(Integer.parseInt(valor));
-        produto.setStatus(status);
-        
-        ProdutosDAO produtodao = new ProdutosDAO();
-        produtodao.cadastrarProduto(produto);
-        
+String nome = cadastroNome.getText().trim();
+    String valorStr = cadastroValor.getText().trim();
+
+    // validação
+    if (nome.isEmpty()) {
+        javax.swing.JOptionPane.showMessageDialog(this, "O campo Nome é obrigatório.");
+        cadastroNome.requestFocus();
+        return;
+    }
+
+    if (valorStr.isEmpty()) {
+        javax.swing.JOptionPane.showMessageDialog(this, "O campo Valor é obrigatório.");
+        cadastroValor.requestFocus();
+        return;
+    }
+
+    Integer valor;
+    try {
+        valor = Integer.valueOf(valorStr);
+    } catch (NumberFormatException e) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Valor inválido. Digite apenas números inteiros.");
+        return;
+    }
+
+    // montar DTO
+    ProdutosDTO produto = new ProdutosDTO();
+    produto.setNome(nome);
+    produto.setValor(valor);
+    produto.setStatus("A Venda");
+
+    // chamar DAO corretamente
+    ProdutosDAO produtodao = new ProdutosDAO();
+    boolean sucesso = produtodao.cadastrarProduto(produto);
+
+    if (sucesso) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Cadastro realizado com sucesso!");
+
+        // limpa campos
+        cadastroNome.setText("");
+        cadastroValor.setText("");
+
+        // atualiza listagem se ela estiver aberta
+        for (java.awt.Window w : java.awt.Window.getWindows()) {
+            if (w instanceof listagemVIEW vIEW) {
+                vIEW.listarProdutos();
+            }
+        }
+
+    } else {
+        javax.swing.JOptionPane.showMessageDialog(this, "Erro ao cadastrar produto.");
+    }
+
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void btnProdutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutosActionPerformed
